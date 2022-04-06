@@ -3,7 +3,8 @@ import { property } from 'lit/decorators.js';
 
 export class MetricApp extends LitElement {
 
-  @property({ type: Number }) temperature = 0;
+  @property({ type: Number }) temperature: Number | null = null;
+
   busyIndicator = false;
 
   static styles = css`
@@ -40,12 +41,17 @@ export class MetricApp extends LitElement {
     }
 
     async addData():Promise<void> {
-      this.busyIndicator = true
+        // Give the browser a chance to paint
+      await new Promise((r) => setTimeout(r, 0));
+
+      this.busyIndicator = !this.temperature
 
       try {
           const response = await fetch("./current_temp.json")
           const data = await response.json()
           this.temperature = Math.round(data.temp_au*100)/100
+
+          setTimeout(() => this.addData(), 10000);
       } finally {
           this.busyIndicator = false
       }
@@ -56,7 +62,7 @@ export class MetricApp extends LitElement {
       <main>
         <h1>${this.temperature} °C</h1>
 
-        <p class="app-footer">Temperature proudly read by some self-soldered thing ❤ attached to the heating</p>
+        <p class="app-footer">Temperature proudly read by some self-soldered thing ❤</p>
       </main>
     `;
   }
