@@ -3,7 +3,11 @@ import { property } from 'lit/decorators.js';
 
 export class MetricApp extends LitElement {
 
-  @property({ type: Number }) temperature: Number | null = null;
+  @property({ type: Number })
+  temperature: Number | null = null;
+
+  @property({ type: Number})
+  dcRoof: Number | null = null;
 
   busyIndicator = false;
 
@@ -24,6 +28,13 @@ export class MetricApp extends LitElement {
 
     main {
       flex-grow: 1;
+    }
+
+    .temp, .kwh {
+      margin: 20 50 10 50;
+      padding-top: 25px;
+      padding-bottom: 25px;
+      font-size: 2em;
     }
 
     .app-footer {
@@ -50,6 +61,8 @@ export class MetricApp extends LitElement {
           const response = await fetch("./current_temp.json")
           const data = await response.json()
           this.temperature = Math.round(data.temp_au*100)/100
+          this.dcRoof = Math.round(data.dc_roof)
+
 
           setTimeout(() => this.addData(), 10000);
       } finally {
@@ -57,12 +70,56 @@ export class MetricApp extends LitElement {
       }
     }
 
+    iconTemp() {
+      if(!this.temperature) {
+        return "🙃"
+      } else if (this.temperature <= 0) {
+        return "🥶"
+      } else if (this.temperature <= 10) {
+        return "🤧"
+      } else if (this.temperature <= 20) {
+        return "🤠"
+      } else if (this.temperature <= 30) {
+        return "😊"
+      }else if (this.temperature <= 40) {
+        return "🔥"
+      }
+      return "😲"
+    }
+
+    iconDc() {
+      if(!this.dcRoof) {
+        return "🙃"
+      } else if (this.dcRoof <= 500) {
+        return "🌛"
+      } else if (this.dcRoof <= 2000) {
+        return "☁️"
+      } else if (this.dcRoof <= 5000) {
+        return "⛅"
+      } else if (this.dcRoof <= 8000) {
+        return "🌞"
+      }else if (this.dcRoof <= 11000) {
+        return "🌞🌞"
+      }
+      return "😲"
+    }
+
   render() {
     return html`
       <main>
-        <h1>${this.temperature} °C</h1>
+        <h1>Clues on the weather...</h1>
 
-        <p class="app-footer">Temperature proudly read by some self-soldered thing ❤</p>
+        <div class="temp">
+          ${this.iconTemp()}
+          ${this.temperature} °C
+        </div>
+
+        <div class="kwh">
+          ${this.iconDc()}
+          ${this.dcRoof} Wh
+        </div>
+
+        <p class="app-footer">proudly ❤ made with lit framework, all the cloud stuff, iot and a solder iron</p>
       </main>
     `;
   }
