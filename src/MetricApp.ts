@@ -88,7 +88,7 @@ export class MetricApp extends LitElement {
     }
 
     iconDc() {
-      if(!this.dcRoof) {
+      if(this.dcRoof == null) {
         return "🙃"
       } else if (this.dcRoof <= 500) {
         return "🌛"
