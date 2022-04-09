@@ -73,7 +73,7 @@ export class MetricApp extends LitElement {
     iconTemp() {
       if(!this.temperature) {
         return "🙃"
-      } else if (this.temperature <= 0) {
+      } else if (this.temperature <= 3) {
         return "🥶"
       } else if (this.temperature <= 10) {
         return "🤧"
@@ -98,8 +98,10 @@ export class MetricApp extends LitElement {
         return "⛅"
       } else if (this.dcRoof <= 8000) {
         return "🌞"
-      }else if (this.dcRoof <= 11000) {
+      } else if (this.dcRoof <= 11000) {
         return "🌞🌞"
+      } else if (this.dcRoof <= 13000) {
+        return "🌞🌞🔥"
       }
       return "😲"
     }
